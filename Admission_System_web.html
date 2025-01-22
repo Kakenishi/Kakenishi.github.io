@@ -23,6 +23,7 @@
         const readerElement = document.getElementById('reader');
         const resultElement = document.getElementById('result');
         let qrCodeScanner = null;
+        let CURRENT_TEXT = '';
 
         function startCamera() {
             if (qrCodeScanner) {
@@ -44,6 +45,7 @@
             );
         }
 
+        //スキャン成功時の関数
         const onScanSuccess = (decodedText, decodedResult) => {
         console.log('onScanSuccess', decodedText, CURRENT_TEXT);
         if (CURRENT_TEXT !== decodedText) {
@@ -58,13 +60,14 @@
         }
         };
 
-
+        //サーバー側に送る関数
         async function handleQRCode(decodedText) {
             try {
                 console.log(typeof Html5Qrcode);
                 const qrData = JSON.parse(decodedText); // QRコード内容をJSONとして解析
-                const { username, password, reservationNumber } = qrData;
-
+                const{ username, password, reservationNumber } = qrData;
+                //action状態による処理の場合分けは下のサーバーへの伝達関数で処理
+                
                 // サーバーに送信して予約情報を確認
                 const response = await fetch(GAS_API_URL, {
                     method: 'POST',
