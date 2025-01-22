@@ -47,6 +47,7 @@
             <div class="item">Home</div>
             <div class="item">36HR</div>
             <a href="https://kakenishi.github.io/index.html" class="item">予約する</a>
+            <a href="https://kakenishi.github.io/Admission_System_web.html" class="item">QRコードスキャン</a>
             <div class="item">Help</div>
         </div>
     </div>
@@ -133,14 +134,13 @@
                     reservationNumber: result.reservationNumber,
                 };
 
-                // QRコードを生成
-                //const qrcodeContainer = document.getElementById("qrcode");
-                //qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
-                //new QRCode(qrcodeContainer, {
-                //    text: JSON.stringify(qrData),
-                //    width: 128,
-                //    height: 128,
-                //});
+                const qrcodeContainer = document.getElementById("qrcode");
+                qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
+                new QRCode(qrcodeContainer, {
+                    text: JSON.stringify(qrData),
+                    width: 128,
+                    height: 128,
+                });
 
                   if (result.reservationNumber) {
                     document.getElementById('result-success').innerText = 
