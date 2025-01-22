@@ -6,6 +6,7 @@
     <title>予約システム</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="main.js"></script>
 </head>
 <body>
     <h1>QRコードスキャン</h1>
@@ -46,6 +47,7 @@
 
         async function handleQRCode(decodedText) {
             try {
+                console.log(typeof Html5Qrcode);
                 const qrData = JSON.parse(decodedText); // QRコード内容をJSONとして解析
                 const { username, password, reservationNumber } = qrData;
 
