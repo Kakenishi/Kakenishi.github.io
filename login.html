@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約システム</title>
+    <link rel="stylesheet" href="login_style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div>掛川西</div>
+            <div>36HR</div>
+            <div type="waiting-time">あなたの待ち時間 00:00</div>
+        </nav>
+    </header>
+    <main>
+        <form id="login-form" class="login-form">
+            <div class="input-login-box">
+                <input type="text" id="username" name="username" placeholder="予約者のニックネーム" required>
+            </div>
+            <div class="input-login-box">
+                <input type="password" id="password" name="password" placeholder="予約者のパスワード" required>
+            </div>
+            <button type="submit" class="login-button">ログイン</button>
+        </form>
+
+        <div class="show-result">
+            <h2>あなたの予約番号<br></h2>
+            <div id="result-success" class="result-success"></div>
+            <div id="result-error" class="result-error"></div>
+
+            <h1>QRコード生成</h1>
+            <div id="qrcode"></div>
+        </div>
+
+
+    </main>
+    <div id="sidebar">
+        <div class="toggle-btn" onclick="toggleSidebar(this)">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="list">
+            <div class="item">Home</div>
+            <div class="item">36HR</div>
+            <a href="https://kou419.github.io/index.html" class="item">予約する</a>
+            <div class="item">Help</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar(ref){
+            document.getElementById("sidebar").classList.toggle('active');
+        }
+
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbynz8AcqNKnncLCAPMZPDIntlfGb_3Xs0-7uQgaLOcMCMoGtXFcXy4CNgBloASKaoa-/exec';
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+      
+          //ボタンを取得
+          const loginButton = document.querySelector('.login-button');
+          //メッセージを取得
+          const result_success = document.querySelector('.result-success');
+          const result_error = document.querySelector('.result-error')
+          //入力データを取得
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+      
+           // 送信データを準備
+          const formData = new FormData();
+          formData.append('action', 'login'); // ログインを指定
+          formData.append('username', username);
+          formData.append('password', password);
+      
+          try {
+                loginButton.disabled = true;
+                loginButton.textContent = '送信中...';
+                //メッセージをクリア
+                result_success.textContent ='';
+                result_error.textContent ='';
+
+                const response = await fetch(GAS_API_URL, {
+                  method: 'POST',
+                  body: formData
+                });
+          
+                if (response.ok) {
+                  const result = await response.json();
+
+                   // QRコード用のデータを生成
+                const qrData = {
+                    username: username,
+                    password: password,
+                    reservationNumber: result.reservationNumber,
+                };
+
+                // QRコードを生成
+                //const qrcodeContainer = document.getElementById("qrcode");
+                //qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
+                //new QRCode(qrcodeContainer, {
+                //    text: JSON.stringify(qrData),
+                //    width: 128,
+                //    height: 128,
+                //});
+
+                  if (result.reservationNumber) {
+                    document.getElementById('result-success').innerText = 
+                    result.reservationNumber;
+                  } else if (result.error) {
+                    document.getElementById('result-error').innerText = result.error;
+                  }
+                } else {
+                  document.getElementById('result-error').innerText = 
+                    'サーバーエラーが発生しました。';
+                }
+              } catch (error) {
+                console.error('通信エラー:', error);
+                document.getElementById('result-error').innerText = 
+                  '通信エラーが発生しました。';
+              }finally{
+                loginButton.disabled = false;
+                loginButton.textContent = 'ログイン';
+
+              }
+        });
+      </script>      
+</body>
