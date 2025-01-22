@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約システム</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <h1>QRコードスキャン</h1>
+    <div id="reader" style="width: 300px; height: 300px;"></div>
+    <div id="result"></div>
+
+    <main>
+        <button id="start-camera" onclick="startCamera()">カメラ起動</button>
+        <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
+        <div id="result"></div>
+    </main>
+  
+    <script>
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbynz8AcqNKnncLCAPMZPDIntlfGb_3Xs0-7uQgaLOcMCMoGtXFcXy4CNgBloASKaoa-/exec';
+        const readerElement = document.getElementById('reader');
+        const resultElement = document.getElementById('result');
+        let qrCodeScanner = null;
+
+        function startCamera() {
+            if (qrCodeScanner) {
+                qrCodeScanner.stop().catch((err) => console.error("停止エラー:", err));
+            }
+
+            readerElement.style.display = "block";
+            qrCodeScanner = new Html5Qrcode("reader");
+
+            qrCodeScanner.start(
+                { facingMode: "environment" }, // 背面カメラを使用
+                { fps: 10, qrbox: { width: 250, height: 250 } }, // フレームレートとスキャンエリア
+                (decodedText) => {
+                    handleQRCode(decodedText); // QRコード読み取り成功時の処理
+                },
+                (error) => {
+                    console.warn("QRコード読み取りエラー:", error);
+                }
+            );
+        }
+
+        async function handleQRCode(decodedText) {
+            try {
+                const qrData = JSON.parse(decodedText); // QRコード内容をJSONとして解析
+                const { username, password, reservationNumber } = qrData;
+
+                // サーバーに送信して予約情報を確認
+                const response = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: "checkStatus", // サーバー側でステータス確認用のエンドポイントを作成
+                        username,
+                        password,
+                        reservationNumber,
+                    })
+                });
+
+                const result = await response.json();
+
+                // 結果を画面に表示
+                if (result.isValid) {
+                    resultElement.innerHTML = `
+                        <p>予約者: ${result.username}</p>
+                        <p>予約番号: ${result.reservationNumber}</p>
+                        <p>ステータス: ${result.status}</p>
+                    `;
+                } else {
+                    resultElement.innerHTML = `<p style="color:red;">予約が見つかりません。</p>`;
+                }
+
+            } catch (error) {
+                console.error("エラー:", error);
+                resultElement.innerHTML = `<p style="color:red;">QRコードの処理中にエラーが発生しました。</p>`;
+            } finally {
+                qrCodeScanner.stop().catch((err) => console.error("停止エラー:", err));
+            }
+        }
+    </script>
+</body>
