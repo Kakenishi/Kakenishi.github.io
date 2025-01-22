@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>予約システム</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
-    <script src="main.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
     <h1>QRコードスキャン</h1>
@@ -45,6 +44,21 @@
             );
         }
 
+        const onScanSuccess = (decodedText, decodedResult) => {
+        console.log('onScanSuccess', decodedText, CURRENT_TEXT);
+        if (CURRENT_TEXT !== decodedText) {
+            CURRENT_TEXT = decodedText;
+            append(decodedText);
+            beep();
+            google.script.run
+            .withFailureHandler(function (error) {
+                append(`"${decodedText}"の保存に失敗しました: ${error}`);
+            })
+            .onScan(decodedText);
+        }
+        };
+
+
         async function handleQRCode(decodedText) {
             try {
                 console.log(typeof Html5Qrcode);
@@ -64,6 +78,10 @@
                 });
 
                 const result = await response.json();
+
+                const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
+                html5QrcodeScanner.render(onScanSuccess);
+
 
                 // 結果を画面に表示
                 if (result.isValid) {
