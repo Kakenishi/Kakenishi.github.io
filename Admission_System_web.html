@@ -64,7 +64,12 @@
         async function handleQRCode(decodedText) {
             try {
                 console.log(typeof Html5Qrcode);
-                const qrData = JSON.parse(decodedText); // QRコード内容をJSONとして解析
+                // Base64デコードとURLデコードを適用
+                let decodedData;
+                const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
+                decodedData = JSON.parse(decodedBase64); // JSONに変換
+                const qrData = JSON.parse(decodedData); // QRコード内容をJSONとして解析
+                console.log(qrData);
                 const{ username, password, reservationNumber } = qrData;
                 //action状態による処理の場合分けは下のサーバーへの伝達関数で処理
                 
