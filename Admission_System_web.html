@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">f</div>
+        <div class="console" id="console">g</div>
     </main>
   
     <script>
@@ -76,14 +76,17 @@
                 const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
                 const qrData = JSON.parse(decodedBase64); // JSONパース
                 console.log("デコードされたデータ:", qrData);
+                const username = qrData.u;
+                const password = qrData.p;
+            
                 
                 // サーバーに送信して予約情報を確認
                 const response = await fetch(GAS_API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
                         action: "checkStatus", // サーバー側でステータス確認用のエンドポイントを作成
-                        u,
-                        p,
+                        username,
+                        password,
                     })
                 });
 
