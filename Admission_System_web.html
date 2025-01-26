@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">g</div>
+        <div class="console" id="console">h</div>
     </main>
   
     <script>
@@ -102,7 +102,8 @@
                     resultElement.innerHTML = `
                         <p>予約者: ${result.username}</p>
                         <p>予約番号: ${result.reservationNumber}</p>
-                        <p>ステータス: ${result.status}</p>
+                        <p>入場可能: ${result.possible}</p>
+                        <p>入場済み: ${result.already}</p>
                     `;
                 } else {
                     resultElement.innerHTML = `<p style="color:red;">予約が見つかりません。</p>`;
