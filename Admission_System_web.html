@@ -16,6 +16,8 @@
         <button id="start-camera" onclick="startCamera()">カメラ起動</button>
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
+
+        <div class="console">a</div>
     </main>
   
     <script>
@@ -76,7 +78,6 @@
                 // サーバーに送信して予約情報を確認
                 const response = await fetch(GAS_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: "checkStatus", // サーバー側でステータス確認用のエンドポイントを作成
                         username,
@@ -86,6 +87,7 @@
                 });
 
                 const result = await response.json();
+                document.getElementById('console').innerText = result;
 
                 const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
                 html5QrcodeScanner.render(onScanSuccess);
