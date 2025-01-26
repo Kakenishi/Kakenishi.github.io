@@ -67,15 +67,20 @@
 
         //サーバー側に送る関数
         async function handleQRCode(decodedText) {
+            console.log("QRコード内容:", decodedText); // ここで読み取ったデータを確認
             try {
                 console.log(typeof Html5Qrcode);
                 // Base64デコードとURLデコードを適用
-                let decodedData;
+
+                  // Base64デコードとJSONパースを試行
                 const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
-                decodedData = JSON.parse(decodedBase64); // JSONに変換
-                const qrData = JSON.parse(decodedData); // QRコード内容をJSONとして解析
-                console.log(qrData);
-                const{ username, password, reservationNumber } = qrData;
+                const qrData = JSON.parse(decodedBase64); // JSONパース
+                console.log("デコードされたデータ:", qrData);
+
+                //let decodedData;
+                //decodedData = JSON.parse(decodedBase64); // JSONに変換
+                //console.log(qrData);
+                //const{ username, password, reservationNumber } = qrData;
                 //action状態による処理の場合分けは下のサーバーへの伝達関数で処理
                 
                 // サーバーに送信して予約情報を確認
@@ -108,8 +113,9 @@
                 }
 
             } catch (error) {
-                console.error("エラー:", error);
-                resultElement.innerHTML = `<p style="color:red;">QRコードの処理中にエラーが発生しました。</p>`;
+                console.error("デコードエラー:", error);
+                resultElement.innerHTML = `<p style="color:red;">QRコードの内容が無効です。</p>`;
+                return;
             } finally {
                 qrCodeScanner.stop().catch((err) => console.error("停止エラー:", err));
             }
