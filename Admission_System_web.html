@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">h</div>
+        <div class="console" id="console">i</div>
     </main>
   
     <script>
@@ -91,6 +91,7 @@
                 });
 
                 const result = await response.json();
+                console.log(result);
                 document.getElementById('console').innerText = result;
 
                 const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
