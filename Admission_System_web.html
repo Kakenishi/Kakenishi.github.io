@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">k</div>
+        <div class="console" id="console">L</div>
     </main>
   
     <script>
@@ -78,6 +78,14 @@
                 console.log("デコードされたデータ:", qrData);
                 const username = qrData.u;
                 const password = qrData.p;
+
+                        // 送信データを準備
+                const formData = new FormData();
+                formData.append('action', 'checkStatus'); // ログインを指定
+                formData.append('username', qrData.u);
+                formData.append('password', qrData.p);
+                console.log('フォームデータ:', formData);
+
             
                 // QRコードを読み取ったらスキャナーを停止
                 if (qrCodeScanner) {
@@ -85,14 +93,10 @@
                     console.log("QRコード読み取りを停止しました");
                 }
                 
-                // サーバーに送信して予約情報を確認
+                //サーバー側にデータを送信
                 const response = await fetch(GAS_API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        action: "checkStatus", // サーバー側でステータス確認用のエンドポイントを作成
-                        username,
-                        password,
-                    })
+                    body: formData
                 });
                 
                 if(response.ok)
