@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">L</div>
+        <div class="console" id="console">N</div>
     </main>
   
     <script>
@@ -75,7 +75,7 @@
                   // Base64デコードとJSONパースを試行
                 const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
                 const qrData = JSON.parse(decodedBase64); // JSONパース
-                console.log("デコードされたデータ:", qrData);
+                //console.log("デコードされたデータ:", qrData);
                 const username = qrData.u;
                 const password = qrData.p;
 
@@ -85,7 +85,7 @@
                 formData.append('username', qrData.u);
                 formData.append('password', qrData.p);
                 console.log('フォームデータ:', formData);
-
+                console.log('ユーザーネームとパスワード:', qrData.u,qrData.p);
             
                 // QRコードを読み取ったらスキャナーを停止
                 if (qrCodeScanner) {
@@ -102,7 +102,7 @@
                 if(response.ok)
                 {
                 const result = await response.json();
-                console.log("サーバー応答:", result);
+                console.log("サーバー応答:", result +"レスポンスは"+ response);
                     
                 //サーバーのレスポンスがエラーの場合
                 if (result.error) {
