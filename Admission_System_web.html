@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">i</div>
+        <div class="console" id="console">j</div>
     </main>
   
     <script>
@@ -79,6 +79,11 @@
                 const username = qrData.u;
                 const password = qrData.p;
             
+                // QRコードを読み取ったらスキャナーを停止
+                if (qrCodeScanner) {
+                    await qrCodeScanner.stop(); // スキャナーを停止
+                    console.log("QRコード読み取りを停止しました");
+                }
                 
                 // サーバーに送信して予約情報を確認
                 const response = await fetch(GAS_API_URL, {
