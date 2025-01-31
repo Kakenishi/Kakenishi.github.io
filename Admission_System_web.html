@@ -9,16 +9,15 @@
     <script src="https://cdn.jsdelivr.net/npm/vconsole/dist/vconsole.min.js"></script>
 </head>
 <body>
-    <h1>QRコードスキャン</h1>
+    <h1 class="qrtext-box">QRコードスキャン</h1>
     <div id="reader" style="width: 300px; height: 300px;"></div>
-    <div id="result"></div>
-
+    
     <main>
         <button id="start-camera" onclick="startCamera()">カメラ起動</button>
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
-        <div id="result"></div>
+        <div id="result">結果</div>
 
-        <div class="console" id="console">t</div>
+        <div class="console" id="console">ver1.00.0</div>
     </main>
   
     <script>
