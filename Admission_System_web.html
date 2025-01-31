@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.06</div>
+        <div class="console" id="console">ver1.07</div>
     </main>
   
     <script>
@@ -32,6 +32,7 @@
         let username = "";
         let password = "";
         let qrCodeScanner = null;
+        let selectedCameraId = null;
         let CURRENT_TEXT = '';
 
         const vConsole = new VConsole();
@@ -205,7 +206,7 @@
             qrCodeScanner = new Html5Qrcode("reader");
             const config = { fps: 10, qrbox: 250 };
 
-            html5QrCode.start(selectedCameraId, config, onScanSuccess, onScanError)
+            qrCodeScanner.start(selectedCameraId, config, onScanSuccess, onScanError)
             .catch(err => console.error("QRスキャナ開始エラー: ", err));
         }
 
@@ -215,7 +216,7 @@
 
 
          // ページ読み込み時にカメラ一覧を取得
-         window.onload = loadCameras();
+         window.onload = loadCameras;
 
     </script>
 </body>
