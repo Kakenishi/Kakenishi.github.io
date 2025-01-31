@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.14</div>
+        <div class="console" id="console">ver1.15</div>
     </main>
   
     <script>
@@ -47,7 +47,7 @@
             const formData = new FormData();
             formData.append('action', 'allow_Admission'); // 入場処理を指定
             formData.append('username', username);
-            formData.append('reservationNumber', password);
+            formData.append('password', password);
             //console.log(formData);
             console.log('ユーザーネーム',username,'パスワード',password);
             // サーバーへ送信
