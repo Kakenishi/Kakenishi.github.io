@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">P</div>
+        <div class="console" id="console">N</div>
     </main>
   
     <script>
@@ -111,16 +111,16 @@
                 }
 
                 const json_result = JSON.stringify(result);
-                const parsedContent = JSON.parse(result.userInformations)
+                //const parsedContent = JSON.parse(result.userInformations)
                 
                 const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
                 html5QrcodeScanner.render(onScanSuccess);
 
                     resultElement.innerHTML = `
-                        <p>予約者: ${parsedContent.username}</p>
-                        <p>予約番号: ${parsedContent.reservationNumber}</p>
-                        <p>入場可能: ${json_result.possible}</p>
-                        <p>入場済み: ${json_result.already}</p>
+                        <p>予約者: ${json_result.username}</p>
+                        <p>予約番号: ${json_result.reservationNumber}</p>
+                        <p>入場可能: ${result.possible}</p>
+                        <p>入場済み: ${result.already}</p>
                     `;
                 } else {
                     resultElement.innerHTML = `<p style="color:red;">予約が見つかりません。</p>`;
