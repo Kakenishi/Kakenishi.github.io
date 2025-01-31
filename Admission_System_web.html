@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.15</div>
+        <div class="console" id="console">ver1.16</div>
     </main>
   
     <script>
@@ -147,8 +147,8 @@
                     return;
                 }
                 
-                const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
-                html5QrcodeScanner.render(onScanSuccess);
+                //const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
+                //html5QrcodeScanner.render(onScanSuccess);
 
                     resultElement.innerHTML = `
                         <p>予約者: ${result.username}</p>
