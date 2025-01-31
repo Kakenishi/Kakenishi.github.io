@@ -18,7 +18,7 @@
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="result"></div>
 
-        <div class="console" id="console">N</div>
+        <div class="console" id="console">t</div>
     </main>
   
     <script>
@@ -109,16 +109,13 @@
                     resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
                     return;
                 }
-
-                const json_result = JSON.stringify(result);
-                //const parsedContent = JSON.parse(result.userInformations)
                 
                 const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
                 html5QrcodeScanner.render(onScanSuccess);
 
                     resultElement.innerHTML = `
-                        <p>予約者: ${json_result.username}</p>
-                        <p>予約番号: ${json_result.reservationNumber}</p>
+                        <p>予約者: ${result.username}</p>
+                        <p>予約番号: ${result.reservationNumber}</p>
                         <p>入場可能: ${result.possible}</p>
                         <p>入場済み: ${result.already}</p>
                     `;
