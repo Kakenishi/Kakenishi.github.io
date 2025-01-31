@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.08</div>
+        <div class="console" id="console">ver1.09</div>
     </main>
   
     <script>
@@ -98,7 +98,7 @@
 
         //サーバー側に送る関数
         async function handleQRCode(decodedText) {
-            //console.log("QRコード内容:", decodedText); // ここで読み取ったデータを確認
+            console.log("QRコード内容:", decodedText); // ここで読み取ったデータを確認
             try {
                 console.log(typeof Html5Qrcode);
                 // Base64デコードとURLデコードを適用
@@ -106,7 +106,7 @@
                   // Base64デコードとJSONパースを試行
                 const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
                 const qrData = JSON.parse(decodedBase64); // JSONパース
-                //console.log("デコードされたデータ:", qrData);
+                console.log("デコードされたデータ:", qrData);
                 username = qrData.u;
                 password = qrData.p;
 
