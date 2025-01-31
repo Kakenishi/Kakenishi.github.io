@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.07</div>
+        <div class="console" id="console">ver1.08</div>
     </main>
   
     <script>
@@ -82,11 +82,12 @@
 
         //スキャン成功時の関数
         const onScanSuccess = (decodedText, decodedResult) => {
-        console.log('スキャン成功', decodedText, CURRENT_TEXT);
+        console.log('スキャン成功', decodedText,'保存しているテキストデータ', CURRENT_TEXT);
         if (CURRENT_TEXT !== decodedText) {
             CURRENT_TEXT = decodedText;
             append(decodedText);
             beep();
+            handleQRCode(decodedText);
             google.script.run
             .withFailureHandler(function (error) {
                 append(`"${decodedText}"の保存に失敗しました: ${error}`);
