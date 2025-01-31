@@ -39,7 +39,7 @@
 
         //入場するボタンを押した処理
         async function allow_Admission() {
-        console.log("ユーザー名",username,"パスワード",password)
+        //console.log("ユーザー名",username,"パスワード",password)
 
         try {
             
@@ -48,7 +48,8 @@
             formData.append('action', 'allow_Admission'); // 入場処理を指定
             formData.append('username', username);
             formData.append('reservationNumber', password);
-            console.log(formData);
+            //console.log(formData);
+            console.log('ユーザーネーム',username,'パスワード',password);
             // サーバーへ送信
             const response = await fetch(GAS_API_URL, {
                 method: 'POST',
@@ -97,15 +98,15 @@
 
         //サーバー側に送る関数
         async function handleQRCode(decodedText) {
-            console.log("QRコード内容:", decodedText); // ここで読み取ったデータを確認
+            //console.log("QRコード内容:", decodedText); // ここで読み取ったデータを確認
             try {
-                console.log(typeof Html5Qrcode);
+                //console.log(typeof Html5Qrcode);
                 // Base64デコードとURLデコードを適用
 
                   // Base64デコードとJSONパースを試行
                 const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
                 const qrData = JSON.parse(decodedBase64); // JSONパース
-                console.log("デコードされたデータ:", qrData);
+                //console.log("デコードされたデータ:", qrData);
                 username = qrData.u;
                 password = qrData.p;
 
@@ -114,7 +115,7 @@
                 formData.append('action', 'checkStatus'); // ログインを指定
                 formData.append('username', qrData.u);
                 formData.append('password', qrData.p);
-                console.log('フォームデータ:', formData);
+                //console.log('フォームデータ:', formData);
                 console.log('ユーザーネームとパスワード:', qrData.u,qrData.p);
             
                 // QRコードを読み取ったらスキャナーを停止
