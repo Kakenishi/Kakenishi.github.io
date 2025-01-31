@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.13</div>
+        <div class="console" id="console">ver1.14</div>
     </main>
   
     <script>
@@ -58,7 +58,13 @@
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("入場処理サーバー応答:", result);
+                console.log("入場サーバー応答:", JSON.stringify(result, null , 2));
+                    
+                //サーバーのレスポンスがエラーの場合
+                if (result.error) {
+                    resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
+                    return;
+                }
 
                 // 入場処理が成功した場合、最新の情報を取得
                 if (result.success) {
