@@ -15,7 +15,9 @@
     <main>
         <button id="start-camera" onclick="startCamera()">カメラ起動</button>
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
-        <div id="result">結果</div>
+        <div id="userstatus">結果</div>
+
+        <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
         <div class="console" id="console">ver1.00.0</div>
     </main>
@@ -23,7 +25,10 @@
     <script>
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbynz8AcqNKnncLCAPMZPDIntlfGb_3Xs0-7uQgaLOcMCMoGtXFcXy4CNgBloASKaoa-/exec';
         const readerElement = document.getElementById('reader');
-        const resultElement = document.getElementById('result');
+        const resultElement = document.getElementById('userstatus');
+        let username = "";
+        let password = "";
+
         let qrCodeScanner = null;
         let CURRENT_TEXT = '';
 
@@ -48,6 +53,52 @@
                 }
             );
         }
+
+        //入場するボタンを押した処理
+        async function allow_Admission() {
+        if (!CURRENT_TEXT) {
+            resultElement.innerHTML = `<p style="color:red;">QRコードをスキャンしてください。</p>`;
+            return;
+        }
+
+        try {
+            
+            // 送信用データ
+            const formData = new FormData();
+            formData.append('action', 'allow_Admission'); // 入場処理を指定
+            formData.append('username', username);
+            formData.append('reservationNumber', password);
+
+            // サーバーへ送信
+            const response = await fetch(GAS_API_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log("入場処理サーバー応答:", result);
+
+                // 入場処理が成功した場合、最新の情報を取得
+                if (result.success) {
+                    resultElement.innerHTML = `
+                        <p>予約者: ${result.username}</p>
+                        <p>予約番号: ${result.reservationNumber}</p>
+                        <p style="color:green;">入場可能: ${result.possible}</p>
+                        <p style="color:blue;">入場済み: ${result.already}</p>
+                    `;
+                } else {
+                    resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
+                }
+            } else {
+                resultElement.innerHTML = `<p style="color:red;">入場処理に失敗しました。</p>`;
+            }
+        } catch (error) {
+            console.error("入場処理エラー:", error);
+            resultElement.innerHTML = `<p style="color:red;">処理中にエラーが発生しました。</p>`;
+        }
+        }
+
 
         //スキャン成功時の関数
         const onScanSuccess = (decodedText, decodedResult) => {
@@ -75,8 +126,8 @@
                 const decodedBase64 = decodeURIComponent(escape(atob(decodedText))); // Base64デコード + URLデコード
                 const qrData = JSON.parse(decodedBase64); // JSONパース
                 //console.log("デコードされたデータ:", qrData);
-                const username = qrData.u;
-                const password = qrData.p;
+                username = qrData.u;
+                password = qrData.p;
 
                         // 送信データを準備
                 const formData = new FormData();
