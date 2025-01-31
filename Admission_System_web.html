@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.05</div>
+        <div class="console" id="console">ver1.12</div>
     </main>
   
     <script>
@@ -167,35 +167,28 @@
 
          // カメラ一覧を取得してセレクトボックスに追加
          function loadCameras() {
-            navigator.mediaDevices.enumerateDevices().then(devices => {
-        const videoDevices = devices.filter(device => device.kind === "videoinput");
+            Html5Qrcode.getCameras().then(cameras => {
+                if (cameras.length === 0) {
+                    alert("カメラが見つかりません");
+                    return;
+                }
 
-        if (videoDevices.length === 0) {
-            alert("カメラが見つかりません");
-            return;
-        }
+                const cameraSelect = document.getElementById("cameraSelect");
+                cameraSelect.innerHTML = "";
 
-        const cameraSelect = document.getElementById("cameraSelect");
-        cameraSelect.innerHTML = "";
+                cameras.forEach(camera => {
+                    let option = document.createElement("option");
+                    option.value = camera.id;
+                    option.text = camera.label || `カメラ ${camera.id}`;
+                    cameraSelect.appendChild(option);
+                });
 
-        let defaultCameraId = null;
+                // デフォルトで背面カメラを選択（スマホ向け）
+                let backCamera = cameras.find(camera => camera.label.toLowerCase().includes("back"));
+                selectedCameraId = backCamera ? backCamera.id : cameras[0].id;
 
-        videoDevices.forEach(camera => {
-            let option = document.createElement("option");
-            option.value = camera.deviceId;
-            option.text = camera.label || `カメラ ${camera.deviceId}`;
-            cameraSelect.appendChild(option);
-
-            // **背面カメラを探す**
-            if (camera.label.toLowerCase().includes("back")) {
-                defaultCameraId = camera.deviceId;
-            }
-        });
-
-        // **背面カメラが見つかれば選択、なければ最初のカメラを選択**
-        selectedCameraId = defaultCameraId || videoDevices[0].deviceId;
-        cameraSelect.value = selectedCameraId;
-    }).catch(err => console.error("カメラ取得エラー: ", err));
+                cameraSelect.value = selectedCameraId;
+            }).catch(err => console.error("カメラ取得エラー: ", err));
         }
 
         function startCamera() {
