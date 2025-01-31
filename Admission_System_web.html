@@ -13,13 +13,16 @@
     <div id="reader" style="width: 300px; height: 300px;"></div>
     
     <main>
+        <!-- カメラ選択 -->
+        <label for="cameraSelect">カメラを選択:</label>
+        <select id="cameraSelect"></select>
         <button id="start-camera" onclick="startCamera()">カメラ起動</button>
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="userstatus">結果</div>
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.03</div>
+        <div class="console" id="console">ver1.05</div>
     </main>
   
     <script>
@@ -34,23 +37,22 @@
         const vConsole = new VConsole();
 
         function startCamera() {
+            selectedCameraId = document.getElementById("cameraSelect").value;
+            if (!selectedCameraId) {
+                alert("カメラが選択されていません");
+                return;
+            }
+
             if (qrCodeScanner) {
                 qrCodeScanner.stop().catch((err) => console.error("停止エラー:", err));
             }
 
             readerElement.style.display = "block";
             qrCodeScanner = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: 250 };
 
-            qrCodeScanner.start(
-                { facingMode: "environment" }, // 背面カメラを使用
-                { fps: 10, qrbox: { width: 250, height: 250 } }, // フレームレートとスキャンエリア
-                (decodedText) => {
-                    handleQRCode(decodedText); // QRコード読み取り成功時の処理
-                },
-                (error) => {
-                    console.warn("QRコード読み取りエラー:", error);
-                }
-            );
+            html5QrCode.start(selectedCameraId, config, onScanSuccess, onScanError)
+            .catch(err => console.error("QRスキャナ開始エラー: ", err));
         }
 
         //入場するボタンを押した処理
@@ -64,7 +66,7 @@
             formData.append('action', 'allow_Admission'); // 入場処理を指定
             formData.append('username', username);
             formData.append('reservationNumber', password);
-
+            console.log(formData);
             // サーバーへ送信
             const response = await fetch(GAS_API_URL, {
                 method: 'POST',
@@ -180,5 +182,35 @@
                 }
             }
         }
+
+         // カメラ一覧を取得してセレクトボックスに追加
+         function loadCameras() {
+            Html5Qrcode.getCameras().then(cameras => {
+                if (cameras.length === 0) {
+                    alert("カメラが見つかりません");
+                    return;
+                }
+
+                const cameraSelect = document.getElementById("cameraSelect");
+                cameraSelect.innerHTML = "";
+
+                cameras.forEach(camera => {
+                    let option = document.createElement("option");
+                    option.value = camera.id;
+                    option.text = camera.label || `カメラ ${camera.id}`;
+                    cameraSelect.appendChild(option);
+                });
+
+                // デフォルトで背面カメラを選択（スマホ向け）
+                let backCamera = cameras.find(camera => camera.label.toLowerCase().includes("back"));
+                selectedCameraId = backCamera ? backCamera.id : cameras[0].id;
+
+                cameraSelect.value = selectedCameraId;
+            }).catch(err => console.error("カメラ取得エラー: ", err));
+        }
+
+         // ページ読み込み時にカメラ一覧を取得
+         window.onload = loadCameras();
+
     </script>
 </body>
