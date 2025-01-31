@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.05</div>
+        <div class="console" id="console">ver1.06</div>
     </main>
   
     <script>
@@ -35,25 +35,6 @@
         let CURRENT_TEXT = '';
 
         const vConsole = new VConsole();
-
-        function startCamera() {
-            selectedCameraId = document.getElementById("cameraSelect").value;
-            if (!selectedCameraId) {
-                alert("カメラが選択されていません");
-                return;
-            }
-
-            if (qrCodeScanner) {
-                qrCodeScanner.stop().catch((err) => console.error("停止エラー:", err));
-            }
-
-            readerElement.style.display = "block";
-            qrCodeScanner = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: 250 };
-
-            html5QrCode.start(selectedCameraId, config, onScanSuccess, onScanError)
-            .catch(err => console.error("QRスキャナ開始エラー: ", err));
-        }
 
         //入場するボタンを押した処理
         async function allow_Admission() {
@@ -208,6 +189,30 @@
                 cameraSelect.value = selectedCameraId;
             }).catch(err => console.error("カメラ取得エラー: ", err));
         }
+
+        function startCamera() {
+            selectedCameraId = document.getElementById("cameraSelect").value;
+            if (!selectedCameraId) {
+                alert("カメラが選択されていません");
+                return;
+            }
+
+            if (qrCodeScanner) {
+                qrCodeScanner.stop().catch((err) => console.error("停止エラー:", err));
+            }
+
+            readerElement.style.display = "block";
+            qrCodeScanner = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: 250 };
+
+            html5QrCode.start(selectedCameraId, config, onScanSuccess, onScanError)
+            .catch(err => console.error("QRスキャナ開始エラー: ", err));
+        }
+
+        function onScanError(errorMessage) {
+            console.warn(errorMessage);
+        }
+
 
          // ページ読み込み時にカメラ一覧を取得
          window.onload = loadCameras();
