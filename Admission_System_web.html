@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.09</div>
+        <div class="console" id="console">ver1.10</div>
     </main>
   
     <script>
@@ -87,7 +87,6 @@
             CURRENT_TEXT = decodedText;
             append(decodedText);
             beep();
-            handleQRCode(decodedText);
             google.script.run
             .withFailureHandler(function (error) {
                 append(`"${decodedText}"の保存に失敗しました: ${error}`);
@@ -207,8 +206,17 @@
             qrCodeScanner = new Html5Qrcode("reader");
             const config = { fps: 10, qrbox: 250 };
 
-            qrCodeScanner.start(selectedCameraId, config, onScanSuccess, onScanError)
-            .catch(err => console.error("QRスキャナ開始エラー: ", err));
+            qrCodeScanner.start(
+                selectedCameraId, 
+                config, 
+                (decodedText, decodedResult) => { // QRコードがスキャンされたら実行
+                    console.log('スキャン成功:', decodedText);
+                    handleQRCode(decodedText); // ここでQRコードの処理を呼び出す
+                        }, 
+                (errorMessage) => { // スキャンエラー時
+                    console.warn("スキャンエラー:", errorMessage);
+                }
+            ).catch(err => console.error("QRスキャナ開始エラー: ", err));
         }
 
         function onScanError(errorMessage) {
