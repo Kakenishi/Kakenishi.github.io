@@ -19,7 +19,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.01</div>
+        <div class="console" id="console">ver1.03</div>
     </main>
   
     <script>
@@ -28,7 +28,6 @@
         const resultElement = document.getElementById('userstatus');
         let username = "";
         let password = "";
-
         let qrCodeScanner = null;
         let CURRENT_TEXT = '';
 
@@ -57,10 +56,6 @@
         //入場するボタンを押した処理
         async function allow_Admission() {
         console.log("ユーザー名",username,"パスワード",password)
-        if (!CURRENT_TEXT) {
-            resultElement.innerHTML = `<p style="color:red;">QRコードをスキャンしてください。</p>`;
-            return;
-        }
 
         try {
             
