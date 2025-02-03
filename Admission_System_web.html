@@ -37,54 +37,50 @@
 
         const vConsole = new VConsole();
 
-        //入場するボタンを押した処理
+            //入場するボタンを押した処理
         async function allow_Admission() {
-        //console.log("ユーザー名",username,"パスワード",password)
+            //console.log("ユーザー名",username,"パスワード",password)
+            try {
+                
+                // 送信用データ
+                const formData = new FormData();
+                formData.append('action', 'allow_Admission'); // 入場処理を指定
+                formData.append('username', username);
+                formData.append('password', password);
+                //console.log(formData);
+                console.log('ユーザーネーム',username,'パスワード',password);
+                // サーバーへ送信
+                const response = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
 
-        try {
-            
-            // 送信用データ
-            const formData = new FormData();
-            formData.append('action', 'allow_Admission'); // 入場処理を指定
-            formData.append('username', username);
-            formData.append('password', password);
-            //console.log(formData);
-            console.log('ユーザーネーム',username,'パスワード',password);
-            // サーバーへ送信
-            const response = await fetch(GAS_API_URL, {
-                method: 'POST',
-                body: formData
-            });
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("入場サーバー応答:", JSON.stringify(result, null , 2));
+                        
+                    //サーバーのレスポンスがエラーの場合
+                    if (result.error) {
+                        resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
+                        return;
+                    }
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log("入場サーバー応答:", JSON.stringify(result, null , 2));
-                    
-                //サーバーのレスポンスがエラーの場合
-                if (result.error) {
-                    resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
-                    return;
-                }
-
-                // 入場処理が成功した場合、最新の情報を取得
-                if (result.success) {
-                    resultElement.innerHTML = `
-                        <p>予約者: ${result.username}</p>
-                        <p>予約番号: ${result.reservationNumber}</p>
-                        <p style="color:green;">入場可能: ${result.possible}</p>
-                        <p style="color:blue;">入場済み: ${result.already}</p>
-                    `;
-                } else {
-                    resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
-                }
-            } else {
-                resultElement.innerHTML = `<p style="color:red;">入場処理に失敗しました。</p>`;
+                    // 入場処理が成功した場合、最新の情報を取得
+                        resultElement.innerHTML = `
+                            <p>予約者: ${result.username}</p>
+                            <p>予約番号: ${result.reservationNumber}</p>
+                            <p style="color:green;">入場可能: ${result.possible}</p>
+                            <p style="color:blue;">入場済み: ${result.already}</p>
+                        `;
+                }else {
+                        resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
+                    }
+            } catch (error) {
+                console.error("入場処理エラー:", error);
+                resultElement.innerHTML = `<p style="color:red;">処理中にエラーが発生しました。</p>`;
             }
-        } catch (error) {
-            console.error("入場処理エラー:", error);
-            resultElement.innerHTML = `<p style="color:red;">処理中にエラーが発生しました。</p>`;
         }
-        }
+        
 
 
         //スキャン成功時の関数
@@ -146,10 +142,6 @@
                     resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
                     return;
                 }
-                
-                //const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 240 });
-                //html5QrcodeScanner.render(onScanSuccess);
-
                     resultElement.innerHTML = `
                         <p>予約者: ${result.username}</p>
                         <p>予約番号: ${result.reservationNumber}</p>
@@ -229,8 +221,6 @@
         function onScanError(errorMessage) {
             console.warn(errorMessage);
         }
-
-
          // ページ読み込み時にカメラ一覧を取得
          window.onload = loadCameras;
 
