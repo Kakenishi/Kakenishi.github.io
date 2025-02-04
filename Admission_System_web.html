@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.18</div>
+        <div class="console" id="console">ver1.20</div>
     </main>
   
     <script>
@@ -67,9 +67,9 @@
                         resultElement.innerHTML = `
                             <p>予約者: ${result.username}</p>
                             <p>予約番号: ${result.reservationNumber}</p>
-                            <p style="color:green;">入場可能: ${result.possible}</p>
-                            <p style="color:blue;">入場済み: ${result.already}</p>
-                            <p style="color:blue;">コメント: ${result.comment}</p>
+                            <p>入場可能: ${result.possible}</p>
+                            <p>入場済み: ${result.already}</p>
+                            <p style="color:red;">コメント: ${result.comment}</p>
                         `;
                 }else {
                         resultElement.innerHTML = `<p style="color:red;">${result.error}</p>`;
