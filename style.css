@@ -105,6 +105,13 @@ form {
     font-size: 20px;
 }
 
+#qrcode {
+    display: flex;
+    justify-content: center; /* 水平方向の中央 */
+    margin: 0 auto;
+}
+
+
 *{
     margin: 0px;
     padding: 0px;
