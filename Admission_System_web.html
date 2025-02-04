@@ -22,7 +22,7 @@
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.22</div>
+        <div class="console" id="console">ver1.16</div>
     </main>
   
     <script>
@@ -135,6 +135,7 @@
                 
                 if(response.ok)
                 {
+                star_Camera_Element.textContent = '送信完了';
                 const result = await response.json();
                 console.log("サーバー応答:", JSON.stringify(result, null , 2));
                     
