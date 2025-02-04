@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>予約システム</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
     <header>
@@ -34,6 +35,7 @@
             <h2>あなたの予約番号<br></h2>
             <div id="reservation-number-display" class="reservation-number-display"></div>
             <div id="reservation-number-error" class="reservation-number-error"></div>
+            <div id="qrcode"></div>
         </div>
 
     </main>
@@ -144,6 +146,10 @@
                 // レスポンス確認
                 if (response.ok) {
                 const result = await response.json(); // JSON形式としてレスポンスを解析
+                const qrData = {
+                    u: username,
+                    p: password,
+                }
 
                 if (result.reservationNumber) {
                     document.getElementById('reservation-number-display').innerText = 
@@ -153,6 +159,18 @@
                     document.getElementById('reservation-number-error').innerText = 
                     result.error; // エラーの場合もJSONのerrorフィールドを表示
                 }
+
+                const qrcodeContainer = document.getElementById("qrcode");
+                  const jsonString = JSON.stringify(qrData);
+                  const base64Data = btoa(unescape(encodeURIComponent(jsonString))); // Base64エンコード
+                  qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
+                  new QRCode(qrcodeContainer, {
+                      text: base64Data,
+                      width: 256,
+                      height: 256,
+                      correctLevel : QRCode.CorrectLevel.L
+                  });
+                  
                 } else {
                     document.getElementById('reservation-number-error').innerText = 
                         '予約に失敗しました。サーバーエラーです。';
