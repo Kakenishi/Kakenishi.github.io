@@ -16,19 +16,21 @@
         <!-- カメラ選択 -->
         <label for="cameraSelect">カメラを選択:</label>
         <select id="cameraSelect"></select>
-        <button id="start-camera" onclick="startCamera()">カメラ起動</button>
+        <button id="start-camera" class="start-camera" onclick="startCamera()">カメラ起動</button>
         <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
         <div id="userstatus">結果</div>
 
         <button id="Enter-button" onclick="allow_Admission()">入場</button>
 
-        <div class="console" id="console">ver1.20</div>
+        <div class="console" id="console">ver1.22</div>
     </main>
   
     <script>
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbynz8AcqNKnncLCAPMZPDIntlfGb_3Xs0-7uQgaLOcMCMoGtXFcXy4CNgBloASKaoa-/exec';
         const readerElement = document.getElementById('reader');
         const resultElement = document.getElementById('userstatus');
+        const star_Camera_Element = document.querySelector('.start-camera');
+       
         let username = "";
         let password = "";
         let qrCodeScanner = null;
@@ -99,6 +101,8 @@
         async function handleQRCode(decodedText) {
             //console.log("QRコード内容:", decodedText); // ここで読み取ったデータを確認
             try {
+                star_Camera_Element.disabled = true;
+                star_Camera_Element.textContent = '送信中...';
                 //console.log(typeof Html5Qrcode);
                 // Base64デコードとURLデコードを適用
 
