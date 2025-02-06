@@ -6,6 +6,7 @@
     <title>予約システム</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
 </head>
 <body>
     <header>
@@ -38,6 +39,11 @@
             <div id="qrcode"></div>
         </div>
 
+        <div>
+            <h1 style="margin-top: 300px">ブラウザでプッシュ通知を実装しよう</h1>
+            <input type="button" id="push" onclick="return push()" value="クリックするとプッシュ通知が送られます">
+        </div>
+            
     </main>
         <div id="sidebar">
             <div class="toggle-btn" onclick="toggleSidebar(this)">
@@ -54,6 +60,18 @@
             </div>
         </div>
     <script>
+        function push(){
+  Push.create("更新情報", 
+   {
+    body: "ブログの更新をお知らせします!",
+    icon: 'casley_logo.png',
+    timeout: 8000,
+    onClick: function () {
+    window.focus(); 
+    this.close();
+    }
+  })
+}
 
         function toggleSidebar(ref){
             document.getElementById("sidebar").classList.toggle('active');
