@@ -6,14 +6,16 @@
     <title>予約システム</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
+
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>-->
+
 </head>
 <body>
     <header>
         <nav>
             <div>掛川西</div>
             <div>36HR</div>
-            <div type="waiting-time">あなたの待ち時間 00:00</div>
+            <div type="waiting-time" id="waiting-time">あなたの待ち時間 00:00</div>
         </nav>
     </header>
     <main>
@@ -40,8 +42,8 @@
         </div>
 
         <div>
-            <h1 style="margin-top: 300px">ブラウザでプッシュ通知を実装しよう</h1>
-            <input type="button" id="push" onclick="return push()" value="クリックするとプッシュ通知が送られます">
+             <!-- <h1 style="margin-top: 300px">ブラウザでプッシュ通知を実装しよう</h1>
+            <input type="button" id="push" onclick="return push()" value="クリックするとプッシュ通知が送られます">-->
         </div>
             
     </main>
@@ -60,24 +62,24 @@
             </div>
         </div>
     <script>
-        function push(){
-  Push.create("更新情報", 
-   {
-    body: "ブログの更新をお知らせします!",
-    icon: 'casley_logo.png',
-    timeout: 8000,
-    onClick: function () {
-    window.focus(); 
-    this.close();
-    }
-  })
-}
+        //function push(){
+        //Push.create("更新情報", 
+        //{
+        //    body: "ブログの更新をお知らせします!",
+        //    icon: 'casley_logo.png',
+        //    timeout: 8000,
+        //    onClick: function () {
+        //    window.focus(); 
+        //    this.close();
+        //    }
+        //})
+        //}
 
         function toggleSidebar(ref){
             document.getElementById("sidebar").classList.toggle('active');
         }
 
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbynz8AcqNKnncLCAPMZPDIntlfGb_3Xs0-7uQgaLOcMCMoGtXFcXy4CNgBloASKaoa-/exec';
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyeYUdy-xiQtU3VkSgTLdhXwWu_fStxp95I0qHw8MjeF4SCM8os4oRjZt6596_UuZLY/exec';
         
         // Cookieをセットする関数
         function setCookie(name, value, days) {
@@ -140,6 +142,11 @@
         formData.append('username', username);
         formData.append('password', password);
 
+        const params = new URLSearchParams();
+        params.append("action", "reserve");
+        params.append("username", username);
+        params.append("password", password);
+
         console.log('フォームデータ:', formData); // レスポンス確認
         console.log('username' , username)
         console.log('password' , password)
@@ -158,17 +165,28 @@
                 // データをGASに送信
                 const response = await fetch(GAS_API_URL, {
                 method: 'POST',
-                body: formData
+                mode : "cors",
+                headers: { "Accept": "application/json",
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                body: params,
                 });
-
+                 // まずはレスポンスの生データを確認
+                //const text = await response.text();
+                //console.log("サーバーのレスポンス（RAW）:", text);
                 // レスポンス確認
                 if (response.ok) {
+                console.log("返答あり");
                 const result = await response.json(); // JSON形式としてレスポンスを解析
+                console.log("予約サーバー応答:", JSON.stringify(result, null , 2));
+                document.getElementById('waiting-time').textContent= String("あなたの待ち時間 " +result.waitTime +"分");
+                //const data = JSON.parse(result.content);
                 const qrData = {
                     u: username,
                     p: password,
-                }
+                };
 
+                
                 if (result.reservationNumber) {
                     document.getElementById('reservation-number-display').innerText = 
                         result.reservationNumber;
