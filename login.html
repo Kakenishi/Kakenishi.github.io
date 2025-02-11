@@ -11,7 +11,7 @@
         <nav>
             <div>掛川西</div>
             <div>36HR</div>
-            <div type="waiting-time">あなたの待ち時間 00:00</div>
+            <div type="waiting-time" id="waiting-time">あなたの待ち時間</div>
         </nav>
     </header>
     <main>
@@ -56,7 +56,7 @@
             document.getElementById("sidebar").classList.toggle('active');
         }
 
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbynz8AcqNKnncLCAPMZPDIntlfGb_3Xs0-7uQgaLOcMCMoGtXFcXy4CNgBloASKaoa-/exec';
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyeYUdy-xiQtU3VkSgTLdhXwWu_fStxp95I0qHw8MjeF4SCM8os4oRjZt6596_UuZLY/exec';
 
          // Cookieを取得する関数
         function getCookie(name) {
@@ -90,9 +90,6 @@
             }
           });
 
-
-
-
         document.getElementById('login-form').addEventListener('submit', async (e) => {
           e.preventDefault();
       
@@ -113,6 +110,9 @@
       
           console.log("フォームデータの値"+ formData);
 
+          let currentWaitTime = 0; // 現在の待ち時間（秒単位）
+          let waitTimeInterval = null; // 1秒ごとにカウントダウンするためのInterval
+
           try {
                 loginButton.disabled = true;
                 loginButton.textContent = '送信中...';
@@ -126,12 +126,19 @@
                 });
           
                 if (response.ok) {
+                  console.log("返答あり");
                   const result = await response.json();
-                   // QRコード用のデータを生成
-                const qrData = {
-                    u: username,
-                    p: password,
-                };              
+                    // QRコード用のデータを生成
+                    const qrData = {
+                      u: username,
+                      p: password,
+                  };
+                  //const data = JSON.parse(result.content);
+                  console.log("ログインサーバー応答:", JSON.stringify(result, null , 2));   
+                  document.getElementById('waiting-time').textContent= String("あなたの待ち時間 " +result.waitTime +"分");
+
+
+                  //currentWaitTime = data.waitTime;
                   if (result.reservationNumber) {
                     console.log("予約番号" + result.reservationNumber);
                     document.getElementById('result-success').textContent = 
@@ -142,8 +149,9 @@
                   else{
                     console.log("どっちもだめ");
                   }
-                    
+
                   const qrcodeContainer = document.getElementById("qrcode");
+                  console.log("qrcodeContainer:", qrcodeContainer);
                   const jsonString = JSON.stringify(qrData);
                   const base64Data = btoa(unescape(encodeURIComponent(jsonString))); // Base64エンコード
                   qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
@@ -155,10 +163,13 @@
                   });
                   
                 } else {
+                  qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
                   document.getElementById('result-error').innerText = 
                     'サーバーエラーが発生しました。';
                 }
               } catch (error) {
+                const qrcodeContainer = document.getElementById("qrcode");
+                qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
                 console.error('通信エラー:', error);
                 document.getElementById('result-error').innerText = 
                   '通信エラーが発生しました。';
@@ -168,5 +179,6 @@
 
               }
         });
+              
       </script>      
 </body>
